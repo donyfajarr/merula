@@ -821,9 +821,11 @@ packages:
   tflite_flutter_helper_plus:
     dependency: "direct main"
     description:
-      path: "C:\\Users\\LOSIK\\Downloads\\tenserflow_helper-main\\tenserflow_helper-main"
-      relative: false
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: d9d081f5fac63094ec2343a7e4a9d972d5807b08
+      url: "https://github.com/nugaysamil/tenserflow_helper.git"
+    source: git
     version: "0.0.1"
   tflite_flutter_plus:
     dependency: transitive
