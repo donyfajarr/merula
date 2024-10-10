@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "351300066404",
+    "project_id": "merula-32001",
+    "storage_bucket": "merula-32001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:351300066404:android:9b8429f01e94c700b81371",
+        "android_client_info": {
+          "package_name": "com.example.merula"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "351300066404-q0is7g9tv18j9ni2kdtq860fpkv2lsrb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.merula",
+            "certificate_hash": "af1122596ac2a4b98ffdf21f05820e825674c750"
+          }
+        },
+        {
+          "client_id": "351300066404-ieja57u7am70o2rm3l5i1rc3vu95uuq1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOTeoZgaY8AEQJnDfQEgt6aTKW0sW5iXc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "351300066404-ieja57u7am70o2rm3l5i1rc3vu95uuq1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

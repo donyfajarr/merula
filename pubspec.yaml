@@ -1,4 +1,4 @@
-name: deneeme_tflite_new
+name: merula
 description: A new Flutter project.
 
 publish_to: "none"
@@ -23,7 +23,12 @@ dependencies:
 
   tflite_flutter_helper_plus:
     git:
-      url: https://github.com/nugaysamil/tenserflow_helper.git
+      url: https://github.com/donyfajarr/tenserflow_helper
+  google_sign_in: ^6.2.1
+  firebase_auth: ^5.3.1
+  fluttertoast: ^8.2.8
+  cloud_firestore: ^5.4.4
+  firebase_core: ^3.6.0
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:image/image.dart' as image_lib;
-import 'classifier.dart'; // Import your classifier
+import 'package:google_sign_in/google_sign_in.dart';
+import 'input.dart'; // Import your input.dart file
+import 'form.dart'; // Ensure form.dart contains SimpleForm
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -14,73 +17,130 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Image Picker and MoveNet',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: ImagePickerScreen(),
+      home: SignInScreen(), // Start with SignInScreen
     );
   }
 }
 
-class ImagePickerScreen extends StatefulWidget {
+class SignInScreen extends StatefulWidget {
   @override
-  _ImagePickerScreenState createState() => _ImagePickerScreenState();
+  _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _ImagePickerScreenState extends State<ImagePickerScreen> {
-  File? _image;
-  final ImagePicker _picker = ImagePicker();
-  late MoveNetClassifier _moveNetClassifier;
+class _SignInScreenState extends State<SignInScreen> {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  bool _isSigningIn = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _moveNetClassifier = MoveNetClassifier();
-  }
+  Future<void> _signInWithGoogle() async {
+    setState(() {
+      _isSigningIn = true;
+    });
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    try {
+      // Sign in with Google
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        // The user canceled the sign-in
+        return;
+      }
 
-    if (pickedFile != null) {
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Check for null values
+      if (googleAuth.accessToken == null || googleAuth.idToken == null) {
+        print("Error: Access token or ID token is null");
+        return;
+      }
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // This will sign in the user to Firebase with the Google credentials
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Now you can safely print the current user
+      User? user = FirebaseAuth.instance.currentUser;
+      print(user); // This should not be null
+
+      // If successful, navigate to HomeScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } catch (error) {
+      print("Error signing in: $error");
+    } finally {
       setState(() {
-        _image = File(pickedFile.path);
+        _isSigningIn = false;
       });
-      await _processImage(_image!);
     }
-  }
-
-  Future<void> _processImage(File image) async {
-    final imageBytes = await image.readAsBytes();
-    image_lib.Image? originalImage = image_lib.decodeImage(imageBytes);
-    if (originalImage != null) {
-      await _moveNetClassifier.processImage(originalImage);
-      await _moveNetClassifier.runModel();
-
-      List landmarks = _moveNetClassifier.parseLandmarkData();
-      print(landmarks); // Use the landmarks for further processing
-      // You can also update the UI to show landmarks here if needed
-    }
-  }
-
-  @override
-  void dispose() {
-    _moveNetClassifier.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Picker and MoveNet'),
+        title: Text('Sign In'),
+      ),
+      body: Center(
+        child: _isSigningIn
+            ? CircularProgressIndicator()
+            : ElevatedButton(
+                onPressed: _signInWithGoogle,
+                child: Text('Sign in with Google'),
+              ),
+      ),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Welcome to MoveNet App'),
       ),
       body: Center(
         child: Column(
+          // Use Column to stack widgets vertically
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _image == null ? Text('No image selected.') : Image.file(_image!),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to ImagePickerScreen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ImagePickerScreen()),
+                );
+              },
+              child: Text('Go to Image Picker'),
+            ),
+            SizedBox(height: 20), // Space between the buttons
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to SimpleForm
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SimpleForm()),
+                );
+              },
+              child: Text('Go to Simple Form'),
+            ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _pickImage,
-              child: Text('Pick Image'),
-            ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ResultsScreen()),
+                  );
+                },
+                child: Text('Go To Results'))
           ],
         ),
       ),
