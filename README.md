@@ -1,5 +1,4 @@
-# deneeme_tflite_new
-
+# Merula
 A new Flutter project.
 
 ## Getting Started

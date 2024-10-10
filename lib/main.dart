@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'splash_screen.dart';
 import 'input.dart'; // Import your input.dart file
 import 'form.dart'; // Ensure form.dart contains SimpleForm
 import 'package:firebase_core/firebase_core.dart';
@@ -17,7 +18,47 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Image Picker and MoveNet',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: SignInScreen(), // Start with SignInScreen
+      home: SplashScreen(), // Start with SignInScreen
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Navigate to SignInScreen after 3 seconds
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => SignInScreen()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/logo.png', height: 200), // Your logo here
+            SizedBox(height: 10),
+            Text("MERULA",
+                style: TextStyle(
+                    fontFamily: 'LilitaOne',
+                    fontSize: 36,
+                    color: Color(0xFF086444))),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -84,6 +125,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Sign In'),
       ),
@@ -103,6 +145,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Welcome to MoveNet App'),
       ),
