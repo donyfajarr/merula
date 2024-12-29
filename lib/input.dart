@@ -16,7 +16,8 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   final ImagePicker _picker = ImagePicker();
   late MoveNetClassifier _moveNetClassifier;
   bool _isModelReady = false; // New state to track model loading
-  List<List<double>> _keypoints = [];
+  List<List<Map<String, dynamic>>> _keypoints = [];
+  // List<List<double>> _keypoints = [];
 
   @override
   void initState() {
@@ -68,37 +69,33 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     image_lib.Image? originalImage = image_lib.decodeImage(imageBytes);
 
     if (originalImage != null) {
-      try {
-        print("Processing image...");
-        await _moveNetClassifier.processImage(originalImage);
-        await _moveNetClassifier.runModel();
+  try {
+    print("Processing image...");
+    _moveNetClassifier ??= MoveNetClassifier();
 
-        // Assuming parseLandmarkData returns List<List<dynamic>>
-        List<List<dynamic>> landmarks =
-            _moveNetClassifier.parseLandmarkData().cast<List<dynamic>>();
+    // Load the model if it's not loaded already
+    await _moveNetClassifier.loadModel();
 
-        // Convert to List<List<double>> by ensuring each element is cast to double
-        List<List<double>> keypoints = landmarks.map<List<double>>((landmark) {
-          return [
-            (landmark[0] as num).toDouble(), // x coordinate
-            (landmark[1] as num).toDouble(), // y coordinate
-            (landmark[2] as num).toDouble() // confidence score
-          ];
-        }).toList();
+    // Process the image and run the model
+    await _moveNetClassifier.processAndRunModel(image); // Pass the image file
 
-        setState(() {
-          _keypoints =
-              keypoints; // This now matches the List<List<double>> type
-        });
+    // Extract keypoints from the processed output
+    List<List<Map<String, dynamic>>> keypoints = await _moveNetClassifier.keypoints;
 
-        print(_keypoints); // Check the keypoints in the console
-      } catch (e) {
-        print("Error running model: $e");
-      }
-    } else {
-      print("Failed to decode image.");
-    }
+    // Update UI with the extracted keypoints
+    setState(() {
+      _keypoints = keypoints; // _keypoints is a List<List<Map<String, dynamic>>>
+    });
+
+    print("Keypoints: $_keypoints"); // Check the extracted keypoints in the console
+  } catch (e) {
+    print("Error running model: $e");
   }
+} else {
+  print("Failed to decode image.");
+}
+}
+        
 
   @override
   Widget build(BuildContext context) {
@@ -120,12 +117,12 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                     height: 256,
                     child: Image.file(_image!, fit: BoxFit.scaleDown),
                   ),
-                  if (_keypoints.isNotEmpty)
-                    Positioned.fill(
-                      child: KeypointOverlay(
-                          keypoints:
-                              _keypoints), // Ensure _keypoints is List<List<double>>
-                    ),
+                  // if (_keypoints.isNotEmpty)
+                  //   Positioned.fill(
+                  //     child: KeypointOverlay(
+                  //         keypoints:
+                  //             _keypoints), // Ensure _keypoints is List<List<double>>
+                  //   ),
                 ],
               ),
             SizedBox(height: 20),

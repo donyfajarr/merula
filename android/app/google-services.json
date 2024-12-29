@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "351300066404",
     "project_id": "merula-32001",
-    "storage_bucket": "merula-32001.appspot.com"
+    "storage_bucket": "merula-32001.firebasestorage.app"
   },
   "client": [
     {
@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "351300066404-q0is7g9tv18j9ni2kdtq860fpkv2lsrb.apps.googleusercontent.com",
+          "client_id": "351300066404-bcdqg8p67nqn73rjc8rm1o3djm1tmb9n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.merula",
-            "certificate_hash": "af1122596ac2a4b98ffdf21f05820e825674c750"
+            "certificate_hash": "91445664bda935f9db0d83f58bb30c256d353902"
           }
         },
         {
